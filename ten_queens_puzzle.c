@@ -45,7 +45,7 @@ int		find_solution(int tab[10][10], int col)
 
 }
 
-int		ft_ten_queens_puzzle(void)
+int		ten_queens_puzzle(void)
 {
 	int tab[10][10];
 	int i;
@@ -67,6 +67,6 @@ int		ft_ten_queens_puzzle(void)
 
 int main()
 {
-	ft_ten_queerns_puzzle();
+	ten_queerns_puzzle();
 	return (0);
 }
