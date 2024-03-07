@@ -38,15 +38,14 @@ int	check_stats(t_condi *stru)
 	{
 		if (stru->philos[i].total_meals == stru->total_must_eat)
 			index++;
-		pthread_mutex_lock(&stru->death);
 		if ((unsigned long)(the_time()
 			- stru->philos[i].last_meal) > (unsigned long)stru->time_die)
 		{
-			ft_locked_print("has died\n", i, stru, 0);
+			ft_locked_print("has died\n", i, stru);
 			stru->state = 1;
 			return (0);
 		}
-		pthread_mutex_unlock(&stru->death);
+
 	}
 	if (index == stru->philo && stru->total_must_eat > 0)
 	{
