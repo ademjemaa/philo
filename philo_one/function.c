@@ -34,7 +34,6 @@ void	pick_up_forks(int cur, t_condi *stru)
 void	drop_forks(int cur, t_condi *stru)
 {
 	int second;
-
 	second = cur + 1;
 	if (cur + 1 == stru->philo)
 		second = 0;
@@ -51,7 +50,9 @@ void	*function(void *args)
 		return (NULL);
 	pick_up_forks(tab->id,tab->stru);
 	ft_locked_print("is eating\n", tab->id, tab->stru);
+	tab->stru->philos[tab->id].last_meal = the_time();
 	usleep(tab->stru->time_eat * 1000);
+
 	drop_forks(tab->id, tab->stru);
 	tab->stru->philos[tab->id].total_meals++;
 
