@@ -14,10 +14,10 @@
 
 void	free_all(t_condi *stru, t_params **tab)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(++i, stru->philo)
+	while (++i < stru->philo)
 	{
 		pthread_mutex_destroy(&stru->philos[i].fork);
 		free(tab[i]);
@@ -25,25 +25,34 @@ void	free_all(t_condi *stru, t_params **tab)
 	pthread_mutex_destroy(&stru->print);
 	free(stru->philos);
 	free(tab);
-}	
+}
 
 int	check_stats(t_condi *stru)
 {
-	// int	index;
+	int	index;
 	int	i;
 
-	// index = 0;
+	index = 0;
 	i = -1;
 	while (++i < stru->philo)
 	{
-		if ((unsigned long)(the_time() - stru->philos[i].last_meal) > (unsigned long)stru->time_die)
+		if (stru->philos[i].total_meals == stru->total_must_eat)
+			index++;
+		pthread_mutex_lock(&stru->death);
+		if ((unsigned long)(the_time()
+			- stru->philos[i].last_meal) > (unsigned long)stru->time_die)
 		{
-			ft_locked_print("has  died\n", i, stru);
+			ft_locked_print("has died\n", i, stru, 0);
 			stru->state = 1;
 			return (0);
 		}
+		pthread_mutex_unlock(&stru->death);
 	}
-	//more code
+	if (index == stru->philo && stru->total_must_eat > 0)
+	{
+		stru->state = 1;
+		return (0);
+	}
 	return (1);
 }
 
@@ -53,12 +62,12 @@ int	init_vars(char **argv, int argc, t_condi *stru)
 	int				i;
 
 	i = -1;
-
 	if (init_philos(argv, argc, stru) == 0)
 		return (0);
 	stru->philos = malloc(sizeof(t_phil) * stru->philo);
 	current = the_time();
 	pthread_mutex_init(&stru->print, NULL);
+
 	while (++i < stru->philo)
 	{
 		stru->philos[i].id = i;
@@ -72,9 +81,9 @@ int	init_vars(char **argv, int argc, t_condi *stru)
 int	main(int argc, char **argv)
 {
 	int			i;
+	void		*ret;
 	t_condi		stru;
 	t_params	**tab;
-	void 		*ret;
 
 	i = -1;
 	if (init_vars(argv, argc, &stru) == 0)
@@ -85,7 +94,7 @@ int	main(int argc, char **argv)
 		pthread_create(&stru.philos[i].thread_id, NULL,
 			function, (void*)tab[i]);
 		pthread_detach(stru.philos[i].thread_id);
-		// usleep(100);
+		usleep(100);
 	}
 	while (check_stats(&stru))
 		i = -1;
