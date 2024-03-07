@@ -49,17 +49,21 @@ void	*function(void *args)
 	if (!check_stats(tab->stru) || tab->stru->state)
 		return (NULL);
 	pick_up_forks(tab->id,tab->stru);
-	ft_locked_print("is eating\n", tab->id, tab->stru);
+	pthread_mutex_lock(&(tab->stru->death));
+	ft_locked_print("is eating\n", tab->id, tab->stru, 0);
 	tab->stru->philos[tab->id].last_meal = the_time();
+	pthread_mutex_unlock(&tab->stru->death);
 	usleep(tab->stru->time_eat * 1000);
 
 	drop_forks(tab->id, tab->stru);
 	tab->stru->philos[tab->id].total_meals++;
-
-	ft_locked_print("is sleeping\n", tab->id, tab->stru);
+	if (tab->stru->philos[tab->id].total_meals == tab->stru->total_must_eat
+		&& tab->stru->total_must_eat > 0)
+		return (NULL);
+	ft_locked_print("is sleeping\n", tab->id, tab->stru, 0);
 	usleep((tab->stru->time_sleep) * 1000);
 
-	ft_locked_print("is thinking \n", tab->id, tab->stru);
+	ft_locked_print("is thinking \n", tab->id, tab->stru, 0);
 
 	if (tab->stru->state == 0)
 		function(args);

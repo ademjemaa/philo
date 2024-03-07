@@ -28,7 +28,7 @@ void	ft_putnbr(unsigned	long n)
 	}
 }
 
-void ft_locked_print(char *str, int cur, t_condi *stru)
+void ft_locked_print(char *str, int cur, t_condi *stru, int signal)
 {
 	if (stru->state == 1)
 		return ;
@@ -38,7 +38,8 @@ void ft_locked_print(char *str, int cur, t_condi *stru)
 	ft_putnbr(cur + 1);
 	ft_putstr(" ");
 	ft_putstr(str);
-	pthread_mutex_unlock(&stru->print);
+	if (signal == 0)
+		pthread_mutex_unlock(&stru->print);
 }
 
 int	ft_putstr(char *str)

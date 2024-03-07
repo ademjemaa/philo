@@ -39,6 +39,7 @@ typedef struct s_condi
 	int				state;
 	unsigned long	time_now;
 	pthread_mutex_t print;
+	pthread_mutex_t death;
 	t_phil			*philos;
 }					t_condi;
 
@@ -53,7 +54,7 @@ int					ft_putstr(char *str);
 int					init_philos(char **argv, int argc, t_condi *stru);
 unsigned long		the_time(void);
 t_params			*param_config(int i, t_condi *stru);
-void				ft_locked_print(char *str, int cur, t_condi *stru);
+void				ft_locked_print(char *str, int cur, t_condi *stru, int signal);
 void				ft_putnbr(unsigned long n);
 void				*function(void	*args);
 t_params			**create_params_tab(t_condi *stru);
